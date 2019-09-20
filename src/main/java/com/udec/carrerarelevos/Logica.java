@@ -33,12 +33,12 @@ public class Logica {
         jugador1 = new Jugador(equipoAmarillo, 0,"A1");
         jugador2 = new Jugador(equipoAmarillo, 1,"A2");
         jugador3 = new Jugador(equipoAmarillo, 2,"A3");
-        jugador4 = new Jugador(equipoVerde,0,"V1");
-        jugador5 = new Jugador(equipoVerde,1,"V2");
-        jugador6 = new Jugador(equipoVerde,2,"V3");
-        jugador7 = new Jugador(equipoRojo,0,"R1");
-        jugador8 = new Jugador(equipoRojo,1,"R2");
-        jugador9 = new Jugador(equipoRojo,2,"R3");
+        jugador4 = new Jugador(equipoVerde,3,"V1");
+        jugador5 = new Jugador(equipoVerde,4,"V2");
+        jugador6 = new Jugador(equipoVerde,5,"V3");
+        jugador7 = new Jugador(equipoRojo,6,"R1");
+        jugador8 = new Jugador(equipoRojo,7,"R2");
+        jugador9 = new Jugador(equipoRojo,8,"R3");
         
         
         //hilos ejecutandosen

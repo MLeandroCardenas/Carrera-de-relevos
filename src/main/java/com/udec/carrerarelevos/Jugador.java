@@ -14,9 +14,7 @@ import java.util.logging.Logger;
  */
 public class Jugador extends Thread implements IColores {
     
-    private Equipo equipo;
-    private Equipo equipo2 = new Equipo("");
-    private Equipo equipo3 = new Equipo("");
+    final Equipo equipo;
     
     private int orden;
     
@@ -34,46 +32,36 @@ public class Jugador extends Thread implements IColores {
         this.orden = orden;
         this.identificador = identificador;
     }
-    
-  /*  @Override
-    public void run(){
-        if(orden == 0) {
-            while(equipo.getPaso() <= 32) {
-                try {
-                    equipo.setPaso((int) (Math.random()*3));
-                    System.out.println("Identificador " + equipo.getPaso());
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } else {
-          
-        }
-        
-    }*/
-    
+   
     @Override
     public void run(){
-        if(orden==0|orden==0|orden==0){
+        if(orden==0)
             corredorUnoEquipoAmarillo();
+        if(orden==3)
             corredorUnoEquipoVerde();
+        if(orden==6)
             corredorUnoEquipoRojo();
-        }
-        else if(orden==1|orden==1|orden==1){
+        if(orden==1)
             corredorDosEquipoAmarillo();
+        if(orden==4)
             corredorDosEquipoVerde();
+        if(orden==7)
             corredorDosEquipoRojo();
-            
-        }
-        else if(orden==2|orden==2|orden==2){
-            while(terminar==true){
+        if(orden==2){
+            while(terminar==true)
                 corredorTresEquipoAmarillo();
-                corredorTresEquipoVerde();
-                corredorTresEquipoRojo();
-            }
-            
         }
+            
+        if(orden==5){
+            while(terminar==true)
+                corredorTresEquipoVerde();
+        }
+            
+        if(orden==8){
+            while(terminar==true)
+                corredorTresEquipoRojo();
+        }
+            
     }
     
     public void corredorUnoEquipoAmarillo(){
@@ -193,10 +181,10 @@ public class Jugador extends Thread implements IColores {
                 posicion+=3;
             }
             imprimirCarrera(posicion,IColores.ANSI_VERDE);
-            synchronized(equipo2){
+            synchronized(equipo){
                 if(terminoCarrera()==true){
-                    equipo2.notify();
-                    equipo2.setPaso(pasos);
+                    equipo.notify();
+                    equipo.setPaso(pasos);
                     break;
                 }
             }   
@@ -205,17 +193,17 @@ public class Jugador extends Thread implements IColores {
     }
     
     public   void corredorDosEquipoVerde(){
-            synchronized(equipo2){
+            synchronized(equipo){
                 try {
                      if(!terminoCarreraDos()){
-                         equipo2.wait();
+                         equipo.wait();
                     }
                 } catch (InterruptedException ex) {
                      Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            byte posicion=(byte) equipo2.getPaso();
-             pasos=(byte) equipo2.getPaso();
+            byte posicion=(byte) equipo.getPaso();
+             pasos=(byte) equipo.getPaso();
             while(pasos<66 || pasos==66){
                 byte numero=(byte)(Math.random()*3);
                 if(numero==1){
@@ -229,10 +217,10 @@ public class Jugador extends Thread implements IColores {
                    posicion+=3;
             }
                 imprimirCarrera(posicion,IColores.ANSI_VERDE);
-          synchronized(equipo2){
+          synchronized(equipo){
                 if(terminoCarreraDos()==true){
-                    equipo2.notify();
-                    equipo2.setPaso(pasos);
+                    equipo.notify();
+                    equipo.setPaso(pasos);
                     break;
                 }
             }
@@ -241,17 +229,17 @@ public class Jugador extends Thread implements IColores {
     }
     
     public   void corredorTresEquipoVerde(){
-        synchronized(equipo2){
+        synchronized(equipo){
                 try {
                     if(!terminoCarreraTres()){
-                      equipo2.wait();
+                      equipo.wait();
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
                 }
         }
-        byte posicion=(byte) equipo2.getPaso();
-        pasos=(byte) equipo2.getPaso();
+        byte posicion=(byte) equipo.getPaso();
+        pasos=(byte) equipo.getPaso();
             while(pasos<=100){
                 byte numero=(byte) (Math.random()*3);
                  if(numero==1){
@@ -264,12 +252,14 @@ public class Jugador extends Thread implements IColores {
                     pasos+=3;
                    posicion+=3;
                 }
-                synchronized(equipo2){
+                synchronized(equipo){
                     if(terminoCarreraTres()==true){
-                        equipo2.notify();
-                        equipo2.setPaso(pasos);
-                        Jugador.interrupted();
-                        Jugador.interrupted();
+                        equipo.notify();
+                        equipo.setPaso(pasos);
+                        if(identificador.equals("A3"))
+                           Jugador.interrupted();
+                        if(identificador.equals("R3"))
+                            Jugador.interrupted();
                         ganadorEquipoVerde();
                         matarHilo();
                         break;
@@ -295,10 +285,10 @@ public class Jugador extends Thread implements IColores {
                 posicion+=3;
             }
             imprimirCarrera(posicion,IColores.ANSI_ROJO);
-            synchronized(equipo3){
+            synchronized(equipo){
                 if(terminoCarrera()==true){
-                    equipo3.notify();
-                    equipo3.setPaso(pasos);
+                    equipo.notify();
+                    equipo.setPaso(pasos);
                     break;
                 }
             }   
@@ -307,17 +297,17 @@ public class Jugador extends Thread implements IColores {
     }
     
     public   void corredorDosEquipoRojo(){
-            synchronized(equipo3){
+            synchronized(equipo){
                 try {
                      if(!terminoCarreraDos()){
-                         equipo3.wait();
+                         equipo.wait();
                     }
                 } catch (InterruptedException ex) {
                      Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            byte posicion=(byte) equipo3.getPaso();
-             pasos=(byte) equipo3.getPaso();
+            byte posicion=(byte) equipo.getPaso();
+             pasos=(byte) equipo.getPaso();
             while(pasos<66 || pasos==66){
                 byte numero=(byte)(Math.random()*3);
                 if(numero==1){
@@ -331,10 +321,10 @@ public class Jugador extends Thread implements IColores {
                    posicion+=3;
             }
                 imprimirCarrera(posicion,IColores.ANSI_ROJO);
-          synchronized(equipo3){
+          synchronized(equipo){
                 if(terminoCarreraDos()==true){
-                    equipo3.notify();
-                    equipo3.setPaso(pasos);
+                    equipo.notify();
+                    equipo.setPaso(pasos);
                     break;
                 }
             }
@@ -343,17 +333,17 @@ public class Jugador extends Thread implements IColores {
     }
     
     public  void corredorTresEquipoRojo(){
-                synchronized(equipo3){
+                synchronized(equipo){
                 try {
                     if(!terminoCarreraTres()){
-                      equipo3.wait();
+                      equipo.wait();
                     }
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
                 }
         }
-        byte posicion=(byte) equipo3.getPaso();
-        pasos=(byte) equipo3.getPaso();
+        byte posicion=(byte) equipo.getPaso();
+        pasos=(byte) equipo.getPaso();
             while(pasos<=100){
                 byte numero=(byte) (Math.random()*3);
                  if(numero==1){
@@ -366,12 +356,14 @@ public class Jugador extends Thread implements IColores {
                     pasos+=3;
                    posicion+=3;
                 }
-                synchronized(equipo3){
+                synchronized(equipo){
                     if(terminoCarreraTres()==true){
-                        equipo3.notify();
-                        equipo3.setPaso(pasos);
-                        Jugador.interrupted();
-                        Jugador.interrupted();
+                        equipo.notify();
+                        equipo.setPaso(pasos);
+                        if(identificador.equals("A3"))
+                            Jugador.interrupted();
+                        if(identificador.equals("V3"))
+                            Jugador.interrupted();
                         ganadorEquipoRojo();
                         matarHilo();
                         break;
