@@ -7,10 +7,14 @@ package com.udec.carrerarelevos;
 
 /**
  *
- * @author michl
+ * @author Michael Cardenas
+ * aqui se crean los hilos y se arrancan
  */
 public class Logica {
     
+    /**
+     * instacnias de la clase jugador representan los hilos
+     */
     Jugador jugador1;
     Jugador jugador2;
     Jugador jugador3;
@@ -21,13 +25,19 @@ public class Logica {
     Jugador jugador8;
     Jugador jugador9;
     
+    /**
+     * constructor vacio de la clase
+     */
     public Logica(){
     }
     
+    /**
+     * se crean los equipos y los hilos igual y se arrancan
+     */
     public void comenzar(){
-        Equipo equipoAmarillo = new Equipo("Amarillo");
-        Equipo equipoVerde = new Equipo("Verde");
-        Equipo equipoRojo = new Equipo("Rojo");
+        Equipo equipoAmarillo = new Equipo("Amarillo",0);
+        Equipo equipoVerde = new Equipo("Verde",0);
+        Equipo equipoRojo = new Equipo("Rojo",0);
         
         //creacion de los hilos en memoria
         jugador1 = new Jugador(equipoAmarillo, 0,"A1");

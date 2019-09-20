@@ -7,9 +7,15 @@ package com.udec.carrerarelevos;
 
 /**
  *
- * @author michl
+ * @author Michael Cardenas
+ * clase por donde arranca el programa
  */
 public class Principal {
+   
+    /**
+     * metodo que llama al metodo de la clase Logica que crea los hilos y los arranca
+     * @param args 
+     */
     public static void main(String... args){
         Logica logica = new Logica();
         logica.comenzar();

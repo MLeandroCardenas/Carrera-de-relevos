@@ -7,10 +7,14 @@ package com.udec.carrerarelevos;
 
 /**
  *
- * @author michl
+ * @author Michael Cardenas
+ * interface que guarda los colores de la impresion de los equipos
  */
 public interface IColores {
     
+    /**
+     * colores de cada impresion
+     */
         public static final String ANSI_VERDE = "\u001B[32m";
         public static final String ANSI_AMARILLO = "\u001B[33m";
         public static final String ANSI_ROJO = "\u001B[31m";
