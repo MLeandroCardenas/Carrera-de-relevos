@@ -18,13 +18,12 @@ import static org.junit.Assert.*;
  * @author michl
  */
 public class TestJugador {
-    
     Jugador jugador;
     Equipo equipo;
     
     public TestJugador() {
-        jugador = new Jugador(equipo,0,"A1");
-        equipo = new Equipo("Amarilllo",0);
+        equipo = new Equipo();
+        jugador = new Jugador(equipo,0,"Rojo");
     }
     
     @BeforeClass
@@ -46,30 +45,9 @@ public class TestJugador {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    // @Test
-    // public void hello() {}
-    
     @Test
-     public void evaluarUltimaEtapa(){
-         jugador.setPasos((byte)102);
-         assertEquals(true, jugador.terminoCarreraTres());
-     }
-     
-     @Test
-     public void evaluarPrimeraEtapa(){
-         jugador.setPasos((byte)34);
-         assertEquals(true, jugador.terminoCarrera());
-     }
-     
-     @Test
-     public void evaluarSegundaEtapa(){
-         jugador.setPasos((byte)65);
-         assertEquals(false, jugador.terminoCarreraDos());
-     }
-     
-      @Test
-     public void ealuarSiHiloMurio(){
-         boolean comenzar=true;
-          assertTrue(comenzar);
+     public void TestPasos() {
+         byte resultado = jugador.correr();
+         assertEquals(3,resultado);
      }
 }

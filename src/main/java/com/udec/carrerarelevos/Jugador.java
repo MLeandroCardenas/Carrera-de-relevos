@@ -11,630 +11,168 @@ import java.util.logging.Logger;
 /**
  *
  * @author Michael Cardenas
- * clase que hereda de la clase Thread para crear los hilos 
+ * clase que crea los hilos
  */
-public class Jugador extends Thread implements IColores {
+public class Jugador extends Thread {
     
     /**
-     * varible que se usara para sincronizar 
+     * atributos necesarios
      */
-    final Equipo equipo;
+    private Equipo equipo;
+    private int inicio;
+    private String color;
     
     /**
-     * orden de cada jugador para identificar el comienzo
+     * cosntructro de la clase lleno
+     * @param equipo
+     * @param inicio
+     * @param color 
      */
-    private int orden;
-    
-    /**
-     * variable para ir acumulando los pasos
-     */
-    private byte pasos;
-    
-    /**
-     * identificador unico de cada jugador
-     */
-    private String identificador;
-    
-    /**
-     * para cambiar el tiempo
-     */
-    private long tiempo = 5;
-    
-    /**
-     * para saber si  el ultimo acabo
-     */
-     private boolean terminar = true;
-    
-
-     /**
-      * constructor de la clase para inicializar el objeto
-      * @param equipo nombre del equipo
-      * @param orden orden de comiernzo de cada hilo
-      * @param identificador identificador unico de cada jugador
-      */
-    public Jugador(Equipo equipo, int orden, String identificador) {
+    public Jugador(Equipo equipo, int inicio, String color){
         this.equipo = equipo;
-        this.orden = orden;
-        this.identificador = identificador;
+        this.inicio = inicio;
+        this.color = color;
     }
-   
     
     /**
-     * metodo run que se sobreescribe donde va la logica de los hilos
+     * metodo que ejecutan todos los hilos
      */
     @Override
     public void run(){
-        if(orden==0){
-            try {
-                 
-                Jugador.sleep(tiempo);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
+         if(inicio==0){
+            primeros();
+            despertar();
+        }else {
+            synchronized(equipo){
+                esperar();
+                 if(inicio==33){
+                 segundos();
+                 despertar();
+                 }else{
+                   synchronized(equipo){
+                       esperar();
+                   if(inicio==66){
+                   terceros();
+                   }
+                 }
             }
-            corredorUnoEquipoAmarillo();
-        } 
-        if(orden==3){
-            try {   
-                Jugador.sleep(tiempo);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            corredorUnoEquipoVerde();
-        } 
-            
-        if(orden==6){
-            try {
-                
-                Jugador.sleep(tiempo);
-                
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            corredorUnoEquipoRojo();
-        } 
-            
-        if(orden==1){
-            try {
-                
-                Jugador.sleep(tiempo);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            corredorDosEquipoAmarillo();
-        } 
-            
-        if(orden==4){
-            try {
-               
-                Jugador.sleep(tiempo);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-              corredorDosEquipoVerde();
         }
-           
-        if(orden==7){
-            try {
-                Jugador.sleep(tiempo);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            corredorDosEquipoRojo();
-        }
-            
-        if(orden==2){
-            while(terminar==true){
-                try {
-                    
-                     Jugador.sleep(tiempo);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                corredorTresEquipoAmarillo();
-            }
-                
-        }
-            
-        if(orden==5){
-            while(terminar==true){
-                try {
-                    
-                    Jugador.sleep(tiempo);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                corredorTresEquipoVerde();
-            }
-                
-        }
-            
-        if(orden==8){
-            while(terminar==true){
-                try {
-                     
-                     Jugador.sleep(tiempo);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                corredorTresEquipoRojo();
-            }
-        }   
     }
-    
+   }
     
     /**
-     * metodo para arracar el juhador 1
+     * metodo que ddeja los hilos en espera
      */
-    public void corredorUnoEquipoAmarillo(){
-        byte posicion = 0;
-        while(pasos<=33){
-            byte numero = (byte) (Math.random()*3);
-            if(numero==1){
-                pasos+=1;
-                posicion++;
-            }
-            else if(numero==2){
-                pasos+=2;
-                posicion+=2;
-            }
-            else if(numero==3){
-                 pasos+=3;
-                posicion+=3;
-            }
-            imprimirCarrera(posicion,IColores.ANSI_AMARILLO);
-            synchronized(equipo){
-                if(terminoCarrera()==true){
-                    equipo.notify();
-                    equipo.setPaso(pasos);
-                    break;
+    public void esperar(){
+        try {
+            equipo.wait();
+        }catch (InterruptedException ex) {
+                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }   
-            imprimir();
-        }        
-    }
-   
-     /**
-     * metodo para arracar el juhador 2
-     */
-    public  void corredorDosEquipoAmarillo(){
-            synchronized(equipo){
-                try {
-                     if(!terminoCarreraDos()){
-                         equipo.wait();
-                    }
-                } catch (InterruptedException ex) {
-                     Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            byte posicion=(byte) equipo.getPaso();
-             pasos=(byte) equipo.getPaso();
-            while(pasos<66 || pasos==66){
-                byte numero=(byte)(Math.random()*3);
-                if(numero==1){
-                    pasos+=1;
-                    posicion++;
-                }else if(numero==2){
-                    pasos+=2;
-                    posicion+=2;
-                }else if(numero==3){
-                    pasos+=3;
-                   posicion+=3;
-            }
-            imprimirCarrera(posicion,IColores.ANSI_AMARILLO);
-          synchronized(equipo){
-                if(terminoCarreraDos()==true){
-                    equipo.notify();
-                    equipo.setPaso(pasos);
-                    break;
-                }
-            }
-            imprimir();
-        }
     }
     
-     /**
-     * metodo para arracar el juhador 3
+    /**
+     * para despertar a los hilos que estan esperando
      */
-    public  void corredorTresEquipoAmarillo(){
+    public void despertar(){
         synchronized(equipo){
-                try {
-                    if(!terminoCarreraTres()){
-                      equipo.wait();
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-        }
-        byte posicion=(byte) equipo.getPaso();
-        pasos=(byte) equipo.getPaso();
-            while(pasos<=100){
-                byte numero=(byte) (Math.random()*3);
-                 if(numero==1){
-                    pasos+=1;
-                    posicion++;
-                }else if(numero==2){
-                    pasos+=2;
-                    posicion+=2;
-                }else if(numero==3){
-                    pasos+=3;
-                   posicion+=3;
-                }
-                synchronized(equipo){
-                    if(terminoCarreraTres()==true){
-                        equipo.notify();
-                        equipo.setPaso(pasos);
-                        ganadorEquipoAmarillo();
-                        matarHilo();
-                        break;
-                    }
-                }
-            }
-    }
-    
-     /**
-     * metodo para arracar el juhador 4
-     */
-    public void corredorUnoEquipoVerde(){
-        byte posicion = 0;
-        while(pasos<=33){
-            byte numero = (byte) (Math.random()*3);
-            if(numero==1){
-                pasos+=1;
-                posicion++;
-            }
-            else if(numero==2){
-                pasos+=2;
-                posicion+=2;
-            }
-            else if(numero==3){
-                 pasos+=3;
-                posicion+=3;
-            }
-            imprimirCarrera(posicion,IColores.ANSI_VERDE);
-            synchronized(equipo){
-                if(terminoCarrera()==true){
-                    equipo.notify();
-                    equipo.setPaso(pasos);
-                    break;
-                }
-            }   
-            imprimir();
-        }   
-    }
-    
-     /**
-     * metodo para arracar el juhador 5
-     */
-    public   void corredorDosEquipoVerde(){
-            synchronized(equipo){
-                try {
-                     if(!terminoCarreraDos()){
-                         equipo.wait();
-                    }
-                } catch (InterruptedException ex) {
-                     Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            byte posicion=(byte) equipo.getPaso();
-             pasos=(byte) equipo.getPaso();
-            while(pasos<66 || pasos==66){
-                byte numero=(byte)(Math.random()*3);
-                if(numero==1){
-                    pasos+=1;
-                    posicion++;
-                }else if(numero==2){
-                    pasos+=2;
-                    posicion+=2;
-                }else if(numero==3){
-                    pasos+=3;
-                   posicion+=3;
-            }
-                imprimirCarrera(posicion,IColores.ANSI_VERDE);
-          synchronized(equipo){
-                if(terminoCarreraDos()==true){
-                    equipo.notify();
-                    equipo.setPaso(pasos);
-                    break;
-                }
-            }
-            imprimir();
+            equipo.notifyAll();
         }
     }
-    
-     /**
-     * metodo para arracar el juhador 6
+    /**
+     * genera el numero randomico
+     * @return 
      */
-    public   void corredorTresEquipoVerde(){
-        synchronized(equipo){
-                try {
-                    if(!terminoCarreraTres()){
-                      equipo.wait();
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-        }
-        byte posicion=(byte) equipo.getPaso();
-        pasos=(byte) equipo.getPaso();
-            while(pasos<=100){
-                byte numero=(byte) (Math.random()*3);
-                 if(numero==1){
-                    pasos+=1;
-                    posicion++;
-                }else if(numero==2){
-                    pasos+=2;
-                    posicion+=2;
-                }else if(numero==3){
-                    pasos+=3;
-                   posicion+=3;
-                }
-                synchronized(equipo){
-                    if(terminoCarreraTres()==true){
-                        equipo.notify();
-                        equipo.setPaso(pasos);
-                        if(identificador.equals("A3"))
-                           Jugador.interrupted();
-                        if(identificador.equals("R3"))
-                            Jugador.interrupted();
-                        ganadorEquipoVerde();
-                        matarHilo();
-                        break;
-                    }
-                }
-            }
-    }
-    
-     /**
-     * metodo para arracar el juhador 7
-     */
-    public  void corredorUnoEquipoRojo(){
-        byte posicion = 0;
-        while(pasos<=33){
-            byte numero = (byte) (Math.random()*3);
-            if(numero==1){
-                pasos+=1;
-                posicion++;
-            }
-            else if(numero==2){
-                pasos+=2;
-                posicion+=2;
-            }
-            else if(numero==3){
-                 pasos+=3;
-                posicion+=3;
-            }
-            imprimirCarrera(posicion,IColores.ANSI_ROJO);
-            synchronized(equipo){
-                if(terminoCarrera()==true){
-                    equipo.notify();
-                    equipo.setPaso(pasos);
-                    break;
-                }
-            }   
-            imprimir();
-        }  
-    }
-    
-     /**
-     * metodo para arracar el juhador 8
-     */
-    public   void corredorDosEquipoRojo(){
-            synchronized(equipo){
-                try {
-                     if(!terminoCarreraDos()){
-                         equipo.wait();
-                    }
-                } catch (InterruptedException ex) {
-                     Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            byte posicion=(byte) equipo.getPaso();
-             pasos=(byte) equipo.getPaso();
-            while(pasos<66 || pasos==66){
-                byte numero=(byte)(Math.random()*3);
-                if(numero==1){
-                    pasos+=1;
-                    posicion++;
-                }else if(numero==2){
-                    pasos+=2;
-                    posicion+=2;
-                }else if(numero==3){
-                    pasos+=3;
-                   posicion+=3;
-            }
-                imprimirCarrera(posicion,IColores.ANSI_ROJO);
-          synchronized(equipo){
-                if(terminoCarreraDos()==true){
-                    equipo.notify();
-                    equipo.setPaso(pasos);
-                    break;
-                }
-            }
-            imprimir();
-        }
-    }
-    
-     /**
-     * metodo para arracar el juhador 9
-     */
-    public  void corredorTresEquipoRojo(){
-                synchronized(equipo){
-                try {
-                    if(!terminoCarreraTres()){
-                      equipo.wait();
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-        }
-        byte posicion=(byte) equipo.getPaso();
-        pasos=(byte) equipo.getPaso();
-            while(pasos<=100){
-                byte numero=(byte) (Math.random()*3);
-                 if(numero==1){
-                    pasos+=1;
-                    posicion++;
-                }else if(numero==2){
-                    pasos+=2;
-                    posicion+=2;
-                }else if(numero==3){
-                    pasos+=3;
-                   posicion+=3;
-                }
-                synchronized(equipo){
-                    if(terminoCarreraTres()==true){
-                        equipo.notify();
-                        equipo.setPaso(pasos);
-                        if(identificador.equals("A3"))
-                            Jugador.interrupted();
-                        if(identificador.equals("V3"))
-                            Jugador.interrupted();
-                        ganadorEquipoRojo();
-                        matarHilo();
-                        break;
-                    }
-                }
-            }
+    public byte correr(){
+        return (byte) (Math.random()*3);
     }
     
     /**
-     * metodo para identificar los pasos que llevan los primeros jugadores de cada equipo
-     * @return un valor verdadero o falso
+     * arranca los primeros jugadores
      */
-    public  boolean terminoCarrera(){
-        boolean valor=false;
-       if(pasos==32 || pasos>32){
-           valor=true; 
-       }
-      return valor;
+    public void primeros(){
+        byte pasos;
+        while(equipo.getPosJugadorUno()<33){
+            equipo.imprimirCiruito(getColor());
+            pasos = correr();
+            equipo.setPosJugadorUno((byte) (equipo.getPosJugadorUno()+pasos));
+            if(equipo.getPosJugadorUno()>33){
+                equipo.setPosJugadorUno((byte)33);
+            }
+        }
+    }
+    
+    /**
+     * arranca los segundos jugadores
+     */
+    public void segundos(){
+        byte pasos;
+        while(equipo.getPosJugadorUno()<66){
+            equipo.imprimirCiruito(getColor());
+            pasos = correr();
+            equipo.setPosJugadorDos((byte) (equipo.getPosJugadorDos()+pasos));
+            if(equipo.getPosJugadorDos()>66){
+                equipo.setPosJugadorUno((byte)66);
+            }
+        }
+    }
+    
+  /**
+     * arranca los terceros jugadores
+     */
+    public void terceros(){
+        byte pasos;
+        while(equipo.getPosJugadorTres()<100){
+            equipo.imprimirCiruito(getColor());
+            pasos = correr();
+            equipo.setPosJugadorTres((byte) (equipo.getPosJugadorTres()+pasos));
+            if(equipo.getPosJugadorTres()>100){
+                equipo.setPosJugadorUno((byte)100);
+            }
+        }
+        decirGanador();
+    }
+    
+    /**
+     * cice el ganador final y cierra el hilo
+     */
+    public void decirGanador(){
+            if("\u001B[33m".equals(color)){
+                System.out.println(IColores.ANSI_RESET+"GANADOR EL EQUIPO A");
+            }
+            else if ("\u001B[32m".equals(color)){
+                System.out.println(IColores.ANSI_RESET+"GANADOR EL EQUIPO B");
+            }else if("\u001B[31m".equals(color)){
+                System.out.println(IColores.ANSI_RESET+"GANADOR EL EQUIPO C");
+            }
+            System.exit(0);
     }
 
-        
     /**
-     * metodo para identificar los pasos que llevan los segundos jugadores de cada equipo
-     * @return un valor verdadero o falso
-     */
-    public  boolean terminoCarreraDos(){
-        boolean valor=false;
-       if(pasos==66 || pasos>66){
-          valor=true; 
-       }
-      return valor;
-    }
-    
-        
-    /**
-     * metodo para identificar los pasos que llevan los tereros jugadores de cada equipo
-     * @return un valor verdadero o falso
-     */
-    public  boolean terminoCarreraTres(){
-        boolean valor=false;
-       if(pasos==100 || pasos>100){
-          valor=true; 
-       }
-      return valor;
-    } 
-    /**
-     * metodo para imprimir solamente un espacio
-     */
-    public void imprimir(){
-        System.out.println();
-        System.out.println();
-        System.out.println(IColores.ANSI_RESET + "----------------------------------------------");
-
-    }
-    
-    /**
-     * metodo para imprimir la posicion en tiempo real de cada hilo
-     * @param posicion la posicion final 
-     * @param color color de la impresion
-     */
-    public synchronized void imprimirCarrera(byte posicion,String color){
-            for(byte i=0;i<posicion;i++){
-                System.out.print(color + ":p");
-                try {
-                    Thread.sleep(tiempo);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-    }
-    /**
-     * para terminar el hilo
-     */
-    public void matarHilo(){
-        this.terminar=false;
-    }
-    
-    /**
-     * imprime el ganador
-     */
-    public void ganadorEquipoAmarillo(){
-        System.err.println(IColores.ANSI_RESET+"GANO EL EQUIPO AMARILLO");
-    }
-   
-    
-     /**
-     * imprime el ganador
-     */
-    public void ganadorEquipoVerde(){
-        System.err.println(IColores.ANSI_RESET+"GANO EL EQUIPO VERDE");
-    }
-    
-    /**
-     * imprime el ganador
-     */
-    public void ganadorEquipoRojo(){
-        System.err.println(IColores.ANSI_RESET+"GANO EL EQUIPO ROJO");
-    }
-
-    
-    /**
-     * metodos publicos de para acceder a las variables privadas
+     * metodos publicos
      * @return 
      */
     public Equipo getEquipo() {
         return equipo;
     }
-    
-    public int getOrden() {
-        return orden;
+
+    public void setEquipo(Equipo equipo) {
+        this.equipo = equipo;
     }
 
-    public void setOrden(int orden) {
-        this.orden = orden;
+    public int getInicio() {
+        return inicio;
     }
 
-    public byte getPasos() {
-        return pasos;
+    public void setInicio(int inicio) {
+        this.inicio = inicio;
     }
 
-    public void setPasos(byte pasos) {
-        this.pasos = pasos;
+    public String getColor() {
+        return color;
     }
 
-    public String getIdentificador() {
-        return identificador;
+    public void setColor(String color) {
+        this.color = color;
     }
-
-    public void setIdentificador(String identificador) {
-        this.identificador = identificador;
-    }
-
-    public long getTiempo() {
-        return tiempo;
-    }
-
-    public void setTiempo(long tiempo) {
-        this.tiempo = tiempo;
-    }
-
-    public boolean isTerminar() {
-        return terminar;
-    }
-
-    public void setTerminar(boolean terminar) {
-        this.terminar = terminar;
-    }    
 }
-

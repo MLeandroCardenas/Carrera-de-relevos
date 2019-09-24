@@ -10,20 +10,7 @@ package com.udec.carrerarelevos;
  * @author Michael Cardenas
  * aqui se crean los hilos y se arrancan
  */
-public class Logica {
-    
-    /**
-     * instacnias de la clase jugador representan los hilos
-     */
-    Jugador jugador1;
-    Jugador jugador2;
-    Jugador jugador3;
-    Jugador jugador4;
-    Jugador jugador5;
-    Jugador jugador6;
-    Jugador jugador7;
-    Jugador jugador8;
-    Jugador jugador9;
+public class Logica implements IColores{
     
     /**
      * constructor vacio de la clase
@@ -35,23 +22,22 @@ public class Logica {
      * se crean los equipos y los hilos igual y se arrancan
      */
     public void comenzar(){
-        Equipo equipoAmarillo = new Equipo("Amarillo",0);
-        Equipo equipoVerde = new Equipo("Verde",0);
-        Equipo equipoRojo = new Equipo("Rojo",0);
+        Equipo equipoA = new Equipo();
+        Equipo equipoB = new Equipo();
+        Equipo equipoC = new Equipo();
         
-        //creacion de los hilos en memoria
-        jugador1 = new Jugador(equipoAmarillo, 0,"A1");
-        jugador2 = new Jugador(equipoAmarillo, 1,"A2");
-        jugador3 = new Jugador(equipoAmarillo, 2,"A3");
-        jugador4 = new Jugador(equipoVerde,3,"V1");
-        jugador5 = new Jugador(equipoVerde,4,"V2");
-        jugador6 = new Jugador(equipoVerde,5,"V3");
-        jugador7 = new Jugador(equipoRojo,6,"R1");
-        jugador8 = new Jugador(equipoRojo,7,"R2");
-        jugador9 = new Jugador(equipoRojo,8,"R3");
+        Jugador jugador1 = new Jugador(equipoA,0,IColores.ANSI_AMARILLO);
+        Jugador jugador2 = new Jugador(equipoA,33,IColores.ANSI_AMARILLO);
+        Jugador jugador3 = new Jugador(equipoA,66,IColores.ANSI_AMARILLO);
         
+        Jugador jugador4 = new Jugador(equipoB,0,IColores.ANSI_VERDE);
+        Jugador jugador5 = new Jugador(equipoB,33,IColores.ANSI_VERDE);
+        Jugador jugador6 = new Jugador(equipoB,66,IColores.ANSI_VERDE);
         
-        //hilos ejecutandosen
+        Jugador jugador7 = new Jugador(equipoC,0,IColores.ANSI_ROJO);
+        Jugador jugador8 = new Jugador(equipoC,33,IColores.ANSI_ROJO);
+        Jugador jugador9 = new Jugador(equipoC,66,IColores.ANSI_ROJO);
+        
         jugador1.start();
         jugador2.start();
         jugador3.start();
